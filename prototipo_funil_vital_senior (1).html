@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Senior - Teste de Vitalidade</title>
+    <style>
+        :root {
+            --cor-primaria: #0064B1; /* Azul profundo */
+            --cor-secundaria: #FFD700; /* Dourado */
+            --cor-acento: #4CAF50; /* Verde vibrante */
+            --cor-texto: #333333;
+            --cor-texto-claro: #FFFFFF;
+            --cor-fundo: #F4F6F8;
+            --cor-fundo-etapa: #FFFFFF;
+            --cor-botao: #FF8C00; /* Laranja vibrante */
+            --cor-botao-hover: #FFA500;
+            --cor-progresso: #4CAF50;
+            --cor-desbloqueio: #FFD700;
+            --cor-erro: #FF6B6B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', 'Lato', 'Montserrat', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .funnel-container {
+            max-width: 700px;
+            width: 100%;
+            background-color: var(--cor-fundo-etapa);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .etapa {
+            display: none;
+            padding: 30px 40px;
+            animation: fadeIn 0.5s ease-in-out;
+            text-align: center;
+        }
+
+        .etapa.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2, h3 {
+            color: var(--cor-primaria);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--cor-acento);
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .option-button {
+            background-color: var(--cor-botao);
+            color: var(--cor-texto-claro);
+            border: none;
+            border-radius: 8px;
+            padding: 18px 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .option-button:hover {
+            background-color: var(--cor-botao-hover);
+            transform: translateY(-2px);
+        }
+
+        .feedback-text {
+            font-size: 0.95rem;
+            color: var(--cor-primaria);
+            margin-top: 10px;
+            min-height: 20px; /* Para evitar pulo de layout */
+            font-style: italic;
+        }
+
+        .progress-bar-container {
+            width: 90%;
+            background-color: #E0E0E0;
+            border-radius: 25px;
+            margin: 25px auto;
+            padding: 5px;
+        }
+
+        .progress-bar {
+            height: 25px;
+            width: 0%; /* Inicial */
+            background-color: var(--cor-progresso);
+            border-radius: 20px;
+            text-align: center;
+            line-height: 25px;
+            color: var(--cor-texto-claro);
+            font-weight: bold;
+            transition: width 0.5s ease-in-out;
+            font-size: 0.9rem;
+        }
+
+        .imagem-ilustrativa {
+            width: 150px;
+            height: 150px;
+            background-color: #DDD;
+            border-radius: 10px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #888;
+            border: 2px dashed #CCC;
+        }
+
+        .selo-desbloqueio {
+            background-color: var(--cor-desbloqueio);
+            color: var(--cor-texto);
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 20px auto;
+            display: inline-block;
+            animation: pulseSelo 1.5s infinite;
+            border: 3px solid #DAA520; /* Dourado mais escuro */
+        }
+
+        @keyframes pulseSelo {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--cor-desbloqueio); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px var(--cor-desbloqueio), 0 0 30px var(--cor-desbloqueio); }
+            100% { transform: scale(1); box-shadow: 0 0 10px var(--cor-desbloqueio); }
+        }
+
+        .selo-final {
+            font-size: 2rem;
+            color: var(--cor-acento);
+            border: 4px dashed var(--cor-acento);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            display: inline-block;
+        }
+
+        .oferta-container {
+            border: 3px solid var(--cor-primaria);
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #E6F3FF; /* Azul bem claro */
+        }
+
+        .preco-original {
+            text-decoration: line-through;
+            color: var(--cor-erro);
+            font-size: 1.1rem;
+        }
+
+        .preco-final {
+            color: var(--cor-acento);
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .selos-aprovacao img {
+            height: 50px;
+            margin: 10px;
+        }
+
+        .countdown-container {
+            background-color: #333;
+            color: var(--cor-texto-claro);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 300px;
+        }
+
+        .countdown-timer {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--cor-secundaria);
+        }
+
+        .cta-final-button {
+            background-color: var(--cor-acento);
+            color: var(--cor-texto-claro);
+            font-size: 1.5rem;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .cta-final-button:hover {
+            background-color: #388E3C; /* Verde mais escuro */
+            transform: scale(1.02);
+        }
+
+        .nav-button-container {
+            margin-top: 30px;
+        }
+
+        .nav-button {
+            background-color: #B0B0B0;
+            color: var(--cor-texto-claro);
+            border: none;
+            border-radius: 8px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .nav-button:hover {
+            background-color: #909090;
+        }
+        .nav-button.next {
+            background-color: var(--cor-primaria);
+        }
+        .nav-button.next:hover {
+            background-color: #004A8C;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="funnel-container">
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+
+        <!-- Etapa 1: Boas-vindas -->
+        <div class="etapa active" id="etapa-1">
+            <h1>Sinta a Vitalidade Renascer!</h1>
+            <div class="imagem-ilustrativa">Imagem: Boas-vindas Vibrante</div>
+            <p>Olá! Que bom ter você aqui! 😊 Queremos saber se você é uma das pessoas especiais que podem ser selecionadas para receber o <strong>Vital Senior</strong> com um desconto super exclusivo! Vamos descobrir juntos?</p>
+            <button class="option-button" onclick="irParaEtapa(2)">SIM! QUERO DESCOBRIR!</button>
+        </div>
+
+        <!-- Etapa 2: Pergunta 1 -->
+        <div class="etapa" id="etapa-2">
+            <h2>Passo 1 de 4: Como estão suas articulações?</h2>
+            <div class="imagem-ilustrativa">Imagem: Articulações Pensativa</div>
+            <p>Com o passar dos anos, é comum sentir alguns incômodos. Conte pra gente: você sente dores nas articulações com frequência?</p>
+            <div class="options-container">
+                <button class="option-button" onclick="responderPergunta(1, 'A', 3)">Sim, sinto dores quase todos os dias.</button>
+                <button class="option-button" onclick="responderPergunta(1, 'B', 3)">Às vezes, principalmente depois de algum esforço.</button>
+                <button class="option-button" onclick="responderPergunta(1, 'C', 3)">Raramente ou nunca sinto dores.</button>
+            </div>
+            <p class="feedback-text" id="feedback-1"></p>
+        </div>
+
+        <!-- Etapa 3: Pergunta 2 -->
+        <div class="etapa" id="etapa-3">
+            <h2>Passo 2 de 4: E a sua energia durante o dia?</h2>
+            <div class="imagem-ilustrativa">Imagem: Cansaço Leve / Bateria</div>
+            <p>Muitas vezes, mesmo após uma noite de sono, o cansaço parece não ir embora. Como você se sente em relação à sua energia diária?</p>
+            <div class="options-container">
+                <button class="option-button" onclick="responderPergunta(2, 'A', 4)">Sinto-me cansado(a) na maior parte do dia.</button>
+                <button class="option-button" onclick="responderPergunta(2, 'B', 4)">Tenho altos e baixos, às vezes me sinto bem, outras vezes não.</button>
+                <button class="option-button" onclick="responderPergunta(2, 'C', 4)">Geralmente tenho boa energia para minhas atividades.</button>
+            </div>
+            <p class="feedback-text" id="feedback-2"></p>
+        </div>
+
+        <!-- Etapa 4: Pergunta 3 -->
+        <div class="etapa" id="etapa-4">
+            <h2>Passo 3 de 4: Relembrando a vitalidade...</h2>
+            <div class="imagem-ilustrativa">Imagem: Comparativa Energia</div>
+            <p>Lembre-se de como você se sentia há uns 10 anos... Você gostaria de resgatar aquela energia e disposição para aproveitar mais a vida?</p>
+            <div class="options-container">
+                <button class="option-button" onclick="responderPergunta(3, 'A', 5)">Com toda certeza! Sinto muita falta daquela vitalidade!</button>
+                <button class="option-button" onclick="responderPergunta(3, 'B', 5)">Sim, seria muito bom ter um pouco mais de energia.</button>
+                <button class="option-button" onclick="responderPergunta(3, 'C', 5)">Acho que minha energia está boa para minha idade.</button>
+            </div>
+            <p class="feedback-text" id="feedback-3"></p>
+        </div>
+
+        <!-- Etapa 5: Desbloqueio Parcial -->
+        <div class="etapa" id="etapa-5">
+            <h2>🎉 BOAS NOTÍCIAS! Primeiro Benefício Desbloqueado! 🎉</h2>
+            <div class="imagem-ilustrativa">Selo/Ícone: Energia Natural</div>
+            <p id="texto-desbloqueio-1">Parabéns por chegar até aqui! Suas respostas mostram que você busca mais bem-estar! Por isso, você acaba de DESBLOQUEAR o primeiro grande benefício do Vital Senior: <strong>MAIS ENERGIA NATURAL E DISPOSIÇÃO</strong> para o seu dia a dia!</p>
+            <div class="selo-desbloqueio">MAIS ENERGIA DESBLOQUEADA</div>
+            <div class="nav-button-container">
+                <button class="nav-button next" onclick="irParaEtapa(6)">Continuar Jornada!</button>
+            </div>
+        </div>
+
+        <!-- Etapa 6: Pergunta 4 -->
+        <div class="etapa" id="etapa-6">
+            <h2>Passo 4 de 4: Movimentando o corpo!</h2>
+            <div class="imagem-ilustrativa">Imagem: Atividade Física Leve</div>
+            <p>Manter o corpo em movimento é muito importante para a saúde, não acha? Conte pra gente: você pratica alguma atividade física regularmente?</p>
+            <div class="options-container">
+                <button class="option-button" onclick="responderPergunta(4, 'A', 7)">Sim, adoro! Pratico várias vezes por semana.</button>
+                <button class="option-button" onclick="responderPergunta(4, 'B', 7)">Faço alguma atividade de vez em quando.</button>
+                <button class="option-button" onclick="responderPergunta(4, 'C', 7)">Não pratico regularmente, mas gostaria de começar.</button>
+                <button class="option-button" onclick="responderPergunta(4, 'D', 7)">No momento, não pratico atividades físicas.</button>
+            </div>
+            <p class="feedback-text" id="feedback-4"></p>
+        </div>
+
+        <!-- Etapa 7: Desbloqueio Extra -->
+        <div class="etapa" id="etapa-7">
+            <h2>💥 INCRÍVEL! Mais um Benefício Exclusivo Desbloqueado! 💥</h2>
+            <div class="imagem-ilustrativa">Selo/Ícone: Suporte Articulações</div>
+            <p id="texto-desbloqueio-2">Uau! Você está indo muito bem e mostrou que se importa com sua saúde! Por isso, acaba de DESBLOQUEAR mais um benefício fundamental do Vital Senior: <strong>SUPORTE TOTAL PARA SUAS ARTICULAÇÕES</strong>, para mais movimento e menos desconforto!</p>
+            <div class="selo-desbloqueio">ARTICULAÇÕES PROTEGIDAS</div>
+             <div class="nav-button-container">
+                <button class="nav-button next" onclick="irParaEtapa(8)">Ver Minha Seleção!</button>
+            </div>
+        </div>
+
+        <!-- Etapa 8: Selo Final de Seleção -->
+        <div class="etapa" id="etapa-8">
+            <h2>🏆 PARABÉNS! VOCÊ FOI OFICIALMENTE SELECIONADO! 🏆</h2>
+            <div class="imagem-ilustrativa">Selo Dourado / Troféu</div>
+            <div class="selo-final">VOCÊ FOI SELECIONADO!</div>
+            <p id="texto-selecao-final">É com grande alegria que anunciamos: VOCÊ COMPLETOU O TESTE DE VITALIDADE E FOI SELECIONADO(A)! Você faz parte do grupo exclusivo de apenas 3% dos participantes que terão acesso à <strong>OFERTA VITAL ESPECIAL</strong> do Vital Senior! Prepare-se para uma transformação!</p>
+            <div class="nav-button-container">
+                <button class="nav-button next" onclick="irParaEtapa(9)">CONHECER MINHA OFERTA EXCLUSIVA!</button>
+            </div>
+        </div>
+
+        <!-- Etapa 9: Oferta Irresistível -->
+        <div class="etapa" id="etapa-9">
+            <h2>Sua Recompensa Exclusiva de Selecionado(a) Vital Senior!</h2>
+            <div class="oferta-container">
+                <div class="imagem-ilustrativa" style="width: 250px; height: auto; border:none;">Imagem: 3 Frascos Vital Senior</div>
+                <p>Como selecionado(a) especial, você garante uma condição única e imperdível para transformar sua vitalidade:</p>
+                <h3><strong>Leve 3 FRASCOS do Vital Senior e Pague APENAS 2!</strong></h3>
+                <p>Isso mesmo! São 3 meses de pura energia, articulações saudáveis e bem-estar pelo preço de 2!</p>
+                <p><span class="preco-original">De R$ 446,85</span> por APENAS <span class="preco-final">R$ 297,90</span>!</p>
+                <p>E o melhor: <strong>PAGAMENTO SOMENTE NA ENTREGA</strong> (via Correios PAC, frete já incluso para sua região!). Sem riscos, sem preocupações!</p>
+                
+                <div class="selos-aprovacao">
+                    <div class="imagem-ilustrativa" style="height:60px; width:150px; display:inline-block; margin:5px;">Selo: Fórmula 100% Natural</div>
+                    <div class="imagem-ilustrativa" style="height:60px; width:150px; display:inline-block; margin:5px;">Selo: Aprovado ANVISA (placeholder)</div>
+                </div>
+
+                <div class="countdown-container">
+                    <p>Esta oferta expira em:</p>
+                    <div class="countdown-timer" id="countdown">23:59:59</div>
+                </div>
+                <p style="color: var(--cor-erro); font-weight: bold;">Apenas mais <span id="kits-restantes">17</span> kits disponíveis nesta condição!</p>
+                
+                <p><em>Imagine acordar com mais disposição, realizar suas atividades sem dores e aproveitar cada momento com a energia que você merece. Com Vital Senior, essa transformação está ao seu alcance!</em></p>
+            </div>
+            <button class="cta-final-button" onclick="alert('Redirecionando para o checkout seguro! (Simulação)')">SIM! QUERO MEUS 3 VITAIS COM DESCONTO AGORA!</button>
+            <p style="font-size:0.9rem; margin-top:10px;">Clique aqui e receba em casa. Estoque limitado para selecionados!</p>
+        </div>
+
+    </div>
+
+    <script>
+        let etapaAtual = 1;
+        const totalEtapasPrincipais = 9; // Contando as etapas de conteúdo, não apenas perguntas
+        const respostasUsuario = {};
+
+        const feedbacks = {
+            1: {
+                'A': "Entendemos como isso pode ser limitante no dia a dia. Continue respondendo para vermos como o Vital Senior pode ajudar você a ter mais conforto.",
+                'B': "Esses incômodos ocasionais podem atrapalhar, não é? O Vital Senior foi pensado para ajudar a manter suas articulações saudáveis. Vamos em frente!",
+                'C': "Que ótima notícia! Prevenir é sempre o melhor caminho para manter essa saúde articular por muitos anos. Continue para saber mais!"
+            },
+            2: {
+                'A': "Essa sensação de cansaço constante realmente nos impede de aproveitar o melhor da vida. O Vital Senior busca trazer de volta sua energia natural. Prossiga!",
+                'B': "Ter mais disposição naqueles dias de baixa energia faria uma grande diferença, certo? Veja como o Vital Senior pode ser um aliado. Continue!",
+                'C': "Excelente! Manter essa vitalidade é essencial. O Vital Senior também ajuda a sustentar seus níveis de energia. Vamos para a próxima pergunta!"
+            },
+            3: {
+                'A': "Esse desejo é muito comum e totalmente possível! O Vital Senior foi formulado pensando em resgatar essa vitalidade. Você está no caminho certo!",
+                'B': "Um impulso extra de energia pode transformar seus dias! Continue para descobrir como o Vital Senior pode proporcionar isso.",
+                'C': "Que bom que se sente disposto! O Vital Senior também atua na manutenção do bem-estar geral para que você continue assim. Próxima etapa!"
+            },
+            4: {
+                'A': "Parabéns pelo seu empenho! O Vital Senior pode ser um grande aliado para potencializar seus resultados e proteger suas articulações durante os exercícios.",
+                'B': "Muito bom! Cada movimento conta para uma vida mais saudável. O Vital Senior pode ajudar a dar aquele suporte extra para suas articulações.",
+                'C': "O desejo de começar é o primeiro passo! O Vital Senior pode ajudar a dar mais disposição e conforto para você iniciar uma rotina de atividades.",
+                'D': "Tudo bem. Saiba que o Vital Senior também ajuda a manter o bem-estar e a saúde das articulações mesmo para quem não tem uma rotina de exercícios intensos."
+            }
+        };
+
+        function atualizarBarraProgresso() {
+            // Ajustar a lógica de progresso para as 9 etapas visuais
+            let progressoPercentual = 0;
+            if (etapaAtual <= 4) progressoPercentual = (etapaAtual / 4) * 50; // Primeiras 4 perguntas = 50%
+            else if (etapaAtual === 5) progressoPercentual = 50;
+            else if (etapaAtual === 6) progressoPercentual = 75;
+            else if (etapaAtual === 7) progressoPercentual = 75;
+            else if (etapaAtual === 8) progressoPercentual = 100;
+            else if (etapaAtual === 9) progressoPercentual = 100;
+            
+            // Simplificando para as etapas de quiz antes dos desbloqueios
+            if (etapaAtual === 1) progressoPercentual = 0;
+            if (etapaAtual === 2) progressoPercentual = 12.5; // Pergunta 1
+            if (etapaAtual === 3) progressoPercentual = 25;   // Pergunta 2
+            if (etapaAtual === 4) progressoPercentual = 37.5; // Pergunta 3
+            if (etapaAtual === 5) progressoPercentual = 50;   // Desbloqueio 1
+            if (etapaAtual === 6) progressoPercentual = 62.5; // Pergunta 4
+            if (etapaAtual === 7) progressoPercentual = 75;   // Desbloqueio 2
+            if (etapaAtual === 8) progressoPercentual = 87.5; // Seleção Final
+            if (etapaAtual === 9) progressoPercentual = 100;  // Oferta
+
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progressoPercentual + '%';
+            progressBar.textContent = Math.round(progressoPercentual) + '%';
+        }
+
+        function irParaEtapa(numeroEtapa) {
+            document.getElementById('etapa-' + etapaAtual).classList.remove('active');
+            etapaAtual = numeroEtapa;
+            document.getElementById('etapa-' + etapaAtual).classList.add('active');
+            atualizarBarraProgresso();
+            window.scrollTo(0, 0);
+        }
+
+        function responderPergunta(numeroPergunta, resposta, proximaEtapa) {
+            respostasUsuario['pergunta' + numeroPergunta] = resposta;
+            const feedbackEl = document.getElementById('feedback-' + numeroPergunta);
+            if (feedbackEl && feedbacks[numeroPergunta] && feedbacks[numeroPergunta][resposta]) {
+                feedbackEl.textContent = feedbacks[numeroPergunta][resposta];
+            }
+            
+            // Lógica de personalização sutil para desbloqueios
+            if (proximaEtapa === 5) { // Indo para o primeiro desbloqueio
+                const textoDesbloqueio1 = document.getElementById('texto-desbloqueio-1');
+                if (respostasUsuario.pergunta3 === 'A' || respostasUsuario.pergunta3 === 'B') {
+                    textoDesbloqueio1.innerHTML = "Suas respostas mostram seu desejo por mais vitalidade! Por isso, você acaba de DESBLOQUEAR o primeiro grande benefício do Vital Senior: <strong>MAIS ENERGIA NATURAL E DISPOSIÇÃO</strong>!";
+                } else {
+                    textoDesbloqueio1.innerHTML = "Mesmo se sentindo bem, um reforço é sempre bem-vindo! Por isso, você acaba de DESBLOQUEAR o primeiro grande benefício do Vital Senior: <strong>SUPORTE PARA MANTER SUA ENERGIA NATURAL</strong>!";
+                }
+            }
+            if (proximaEtapa === 7) { // Indo para o segundo desbloqueio
+                const textoDesbloqueio2 = document.getElementById('texto-desbloqueio-2');
+                if ((respostasUsuario.pergunta1 === 'A' || respostasUsuario.pergunta1 === 'B') || (respostasUsuario.pergunta4 === 'A' || respostasUsuario.pergunta4 === 'B')) {
+                    textoDesbloqueio2.innerHTML = "Percebemos sua preocupação com as articulações e/ou sua dedicação às atividades! Por isso, DESBLOQUEAMOS mais um benefício crucial: <strong>SUPORTE TOTAL PARA SUAS ARTICULAÇÕES</strong>!";
+                } else {
+                    textoDesbloqueio2.innerHTML = "Para garantir seu bem-estar completo, DESBLOQUEAMOS mais um benefício essencial do Vital Senior: <strong>SUPORTE TOTAL PARA SUAS ARTICULAÇÕES</strong>!";
+                }
+            }
+            if (proximaEtapa === 8) { // Indo para a seleção final
+                 const textoSelecaoFinal = document.getElementById('texto-selecao-final');
+                 let focoPrincipal = "seu bem-estar geral";
+                 if (respostasUsuario.pergunta3 === 'A' || respostasUsuario.pergunta2 === 'A') focoPrincipal = "mais energia e disposição";
+                 else if (respostasUsuario.pergunta1 === 'A' || respostasUsuario.pergunta4 === 'A') focoPrincipal = "o cuidado com suas articulações";
+                 textoSelecaoFinal.innerHTML = `Com base nas suas respostas e seu interesse em ${focoPrincipal}, é com grande alegria que anunciamos: VOCÊ FOI OFICIALMENTE SELECIONADO(A)! Você faz parte do grupo exclusivo de apenas 3% dos participantes que terão acesso à <strong>OFERTA VITAL ESPECIAL</strong> do Vital Senior! Prepare-se para uma transformação!`;
+            }
+
+            // Atraso para o usuário ler o feedback antes de avançar
+            setTimeout(() => {
+                irParaEtapa(proximaEtapa);
+                if (feedbackEl) feedbackEl.textContent = ''; // Limpa feedback para a próxima vez
+            }, 700); // 0.7 segundos de atraso
+        }
+
+        // Countdown Timer para Etapa 9
+        function iniciarCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            if (!countdownEl) return;
+
+            let tempoRestante = 24 * 60 * 60; // 24 horas em segundos
+
+            const timer = setInterval(() => {
+                if (tempoRestante <= 0) {
+                    clearInterval(timer);
+                    countdownEl.textContent = "Oferta Expirada!";
+                    return;
+                }
+
+                const horas = Math.floor(tempoRestante / 3600);
+                const minutos = Math.floor((tempoRestante % 3600) / 60);
+                const segundos = tempoRestante % 60;
+
+                countdownEl.textContent = 
+                    `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+                
+                tempoRestante--;
+            }, 1000);
+        }
+        
+        // Simular diminuição de kits restantes
+        function simularKits() {
+            const kitsEl = document.getElementById('kits-restantes');
+            if (!kitsEl) return;
+            let kits = 17;
+            const intervalKits = setInterval(() => {
+                if (kits <= 3) {
+                    // clearInterval(intervalKits); // Pode parar ou continuar diminuindo lentamente
+                     if (kits > 1) kits--;
+                } else {
+                    kits--;
+                }
+                 kitsEl.textContent = kits;
+                 if (kits === 1 && Math.random() < 0.3) clearInterval(intervalKits); // Chance de parar em 1
+            }, Math.random() * (25000 - 10000) + 10000); // Entre 10-25 segundos
+        }
+
+        // Iniciar countdown e simulação de kits quando a etapa 9 for exibida
+        // Isso pode ser chamado dentro da função irParaEtapa quando etapaAtual === 9
+        // Por simplicidade, vamos assumir que será chamado quando o script for carregado se a etapa 9 estiver ativa
+        // No entanto, é melhor chamar quando a etapa se torna ativa.
+        // Modificação em irParaEtapa:
+        // if (etapaAtual === 9) { iniciarCountdown(); simularKits(); }
+        // Como o script é executado após o HTML, e a etapa 9 não está ativa inicialmente, 
+        // vou adicionar um observador ou chamar na função irParaEtapa.
+        // (Adicionado na função irParaEtapa)
+        
+        // Modificação na função irParaEtapa para iniciar o countdown
+        const originalIrParaEtapa = irParaEtapa;
+        irParaEtapa = function(numeroEtapa) {
+            originalIrParaEtapa(numeroEtapa);
+            if (numeroEtapa === 9) {
+                iniciarCountdown();
+                simularKits();
+            }
+        }
+
+        // Inicialização
+        atualizarBarraProgresso();
+        window.scrollTo(0, 0);
+
+    </script>
+
+</body>
+</html>
+
